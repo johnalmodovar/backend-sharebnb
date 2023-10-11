@@ -18,13 +18,13 @@ function authenticateJWT(req, res, next) {
 
   if (authHeader) {
     const token = authHeader;
+    try {
+      res.locals.user = jwt.verify(token, `${SECRET_KEY}`);
+    } catch (err) {
+      // doesn't store user when token is invalid.
+    }
   }
 
-  try {
-    res.locals.user = jwt.verify(token, SECRET_KEY);
-  } catch (err) {
-    // doesn't store user when token is invalid.
-  }
 
   return next();
 }
@@ -37,7 +37,24 @@ function isLoggedIn(req, res, next) {
   throw new UnauthorizedError();
 }
 
+/**
+ * Ensures user trying to access current user data is correct user
+ *
+ * Throws Unauthorized Error if not.
+ *
+ */
+
+function isCorrectUser(req, res, next) {
+  const username = res.locals.user?.username;
+  if (username === req.params.username) {
+    return next();
+  }
+
+  throw new UnauthorizedError();
+}
+
 module.exports = {
   authenticateJWT,
   isLoggedIn,
+  isCorrectUser
 };

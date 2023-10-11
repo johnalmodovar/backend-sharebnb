@@ -86,6 +86,32 @@ class User {
     throw new UnauthorizedError("Invalid username/password");
   }
 
+  /**
+   * Gets a user given username
+   *
+   * Throws NotFound error if no user exists with given username
+   *
+   * returns user data {username, firstName, lastName, email, phone}
+   *
+   */
+
+  static async get(username) {
+    const response = await db.query(`
+        SELECT username,
+               first_name AS "firstName",
+               last_name AS "lastName",
+               email,
+               phone
+        FROM users
+        WHERE username = $1`, [username]);
+
+    const user = response.rows[0];
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    return user;
+  }
+
   //TODO: => function for booking a listing.
 }
 
