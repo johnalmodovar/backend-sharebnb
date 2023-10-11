@@ -32,4 +32,5 @@ router.post("/register", async function (req, res) {
 router.post("/login", async function (req, res) {
   // JSON Schema Validator here...
 });
+
 module.exports = router;
