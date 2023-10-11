@@ -28,7 +28,6 @@ router.post("/register", async function (req, res) {
 /**
  * POST /auth/login { username, password } => { token }
  *
- * TODO:
  */
 
 router.post("/login", async function (req, res) {
