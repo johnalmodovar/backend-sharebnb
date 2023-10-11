@@ -13,6 +13,6 @@ CREATE TABLE listings(
     description TEXT NOT NULL,
     photo_url TEXT NOT NULL,
     availability BOOLEAN NOT NULL DEFAULT FALSE,
-    booked_by VARCHAR(20) NOT NULL
+    listed_by VARCHAR(20) NOT NULL
         REFERENCES users ON DELETE CASCADE
 );
