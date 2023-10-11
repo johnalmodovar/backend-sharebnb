@@ -24,7 +24,7 @@ class User {
         WHERE username = $1`, [username],
     );
 
-    if (duplicateCheck.rows.length > 0) {
+    if (duplicateCheck.rows[0].length > 0) {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
 
