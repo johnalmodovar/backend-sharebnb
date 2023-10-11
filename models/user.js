@@ -24,11 +24,11 @@ class User {
         WHERE username = $1`, [username],
     );
 
-    if (duplicateCheck.rows[0].length > 0) {
+    if (duplicateCheck.rows.length > 0) {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
 
-    const hashedPassword = bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     const result = await db.query(`
             INSERT INTO users
@@ -48,7 +48,7 @@ class User {
       [username, firstName, lastName, hashedPassword, email, phone]
     );
 
-    const user = result.row[0];
+    const user = result.rows[0];
 
     return user;
   }

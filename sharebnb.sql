@@ -1,5 +1,5 @@
 \echo 'Delete and recreate sharebnb db?'
-\prompt 'Return for yes or control-C to cancel > '
+\prompt 'Return for yes or control-C to cancel > ' foo
 
 DROP DATABASE sharebnb;
 CREATE DATABASE sharebnb;
@@ -7,8 +7,8 @@ CREATE DATABASE sharebnb;
 
 \i sharebnb-schema.sql
 
-\echo "Delete and recreate sharebnb_test db?"
-\prompt "Return for yes or control-C to cancel > "
+\echo 'Delete and recreate sharebnb_test db?'
+\prompt 'Return for yes or control-C to cancel > ' foo
 
 DROP DATABASE sharebnb_test;
 CREATE DATABASE sharebnb_test;

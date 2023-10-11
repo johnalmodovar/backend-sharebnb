@@ -19,7 +19,9 @@ router.post("/register", async function (req, res) {
   // JSON Schema Validator stuff here...
 
   const user = await User.register(userFormData);
+
   const token = createToken(user);
+
   return res.status(201).json({ token });
 });
 
@@ -31,6 +33,13 @@ router.post("/register", async function (req, res) {
 
 router.post("/login", async function (req, res) {
   // JSON Schema Validator here...
+
+  const { username, password } = req.body;
+  const user = await User.authenticate(username, password);
+  const token = createToken(user);
+
+  return res.json({ token });
+
 });
 
 module.exports = router;
