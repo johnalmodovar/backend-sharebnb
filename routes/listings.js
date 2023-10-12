@@ -3,6 +3,8 @@ const express = require("express");
 const router = new express.Router();
 const { isCorrectUser, isLoggedIn } = require("../middleware/auth");
 const { readFile, uploadToS3 } = require("../helpers/s3Upload");
+const multer = require('multer');
+const upload = multer();
 
 const Listing = require('../models/listing');
 
@@ -10,13 +12,25 @@ const Listing = require('../models/listing');
  *
  * Returns listing data -> { title, description, price, location, photoUrl, listed_by }
  */
-router.post("/create", isLoggedIn, async function (req, res) {
+router.post("/create", isLoggedIn, upload.single("photoFile"), async function (req, res) {
+  const photoFile = req.file;
+  console.log("photoFile in route", req.file);
+  const { title, description, price, location, listedBy } = req.body;
+  // const photoContent = await readFile(photoFile);
+  console.log("all other form data in req.body in route", req.body);
 
-  const { title, description, price, location, photoFile, listedBy } = req.body;
-  const photoContent = await readFile(photoFile);
-  const photoUrl = await uploadToS3(photoContent);
+  const photoUrl = await uploadToS3(photoFile);
+  console.log("photoUrl in route", photoUrl);
   // const photoUrl = photoFile;
-  const listing = await Listing.add({ title, description, price, location, photoUrl, listedBy });
+  const listing = await Listing.add({
+    title,
+    description,
+    price,
+    location,
+    photoUrl,
+    listedBy
+  });
+  console.log("listing in route", listing);
 
   return res.status(201).json({ listing });
 });

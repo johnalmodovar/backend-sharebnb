@@ -10,7 +10,6 @@ dotenv.config();
 
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const BUCKET_NAME = "sharebnb-jm";
 
 const s3 = new AWS.S3({
@@ -21,13 +20,13 @@ const s3 = new AWS.S3({
 
 
 async function uploadToS3(file) {
-  const name = uuid() + '.jpeg';
+  // const name = uuid() + '.jpeg';
 
   await s3.putObject({
-    Key: name,
+    Key: file.originalname,
     Bucket: BUCKET_NAME,
-    ContentType: 'image/jpeg',
-    Body: file
+    ContentType: file.mimetype,
+    Body: file.buffer
   });
 
   return `https://${BUCKET_NAME}.s3.us-west-1.amazonaws.com/${name}`;
