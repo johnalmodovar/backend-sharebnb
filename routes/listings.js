@@ -13,9 +13,9 @@ const Listing = require('../models/listing');
 router.post("/create", isLoggedIn, async function (req, res) {
 
   const { title, description, price, location, photoFile, listedBy } = req.body;
-  // const photoContent = await readFile(photoFile);
-  // const photoUrl = await uploadToS3(photoContent);
-  const photoUrl = photoFile;
+  const photoContent = await readFile(photoFile);
+  const photoUrl = await uploadToS3(photoContent);
+  // const photoUrl = photoFile;
   const listing = await Listing.add({ title, description, price, location, photoUrl, listedBy });
 
   return res.status(201).json({ listing });

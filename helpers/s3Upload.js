@@ -20,14 +20,14 @@ const s3 = new AWS.S3({
 });
 
 
-async function uploadToS3(data) {
+async function uploadToS3(file) {
   const name = uuid() + '.jpeg';
 
   await s3.putObject({
     Key: name,
     Bucket: BUCKET_NAME,
     ContentType: 'image/jpeg',
-    Body: data
+    Body: file
   });
 
   return `https://${BUCKET_NAME}.s3.us-west-1.amazonaws.com/${name}`;
