@@ -12,8 +12,8 @@ CREATE TABLE listings(
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     photo_url TEXT NOT NULL,
-    availability BOOLEAN NOT NULL DEFAULT FALSE,
     price INTEGER NOT NULL CHECK (price >= 0),
+    location TEXT NOT NULL.
     listed_by VARCHAR(20) NOT NULL
         REFERENCES users ON DELETE CASCADE
 );

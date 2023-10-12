@@ -11,26 +11,25 @@ class Listing {
 
   /** Adds listing to database with provided data.
    *
-   * Return => { title, description, price, availability, photos }
+   * Return => { title, description, price, availability, photoUrl }
    *    where photos => {...}
    *
    */
-  static async addListing({ title, description, price, availability, photos }) {
+  static async add({ title, description, price, location, photoUrl }) {
+
     const result = await db.query(`
         INSERT INTO listings
           (title,
            description,
            price,
-           availability,
-           photos)
+           photo_url)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING
            username,
            description,
            price,
-           availability,
-           photos`,
-      [title, description, price, availability, photos]
+           photo_url AS "photoUrl"`,
+      [title, description, price, photoUrl]
     );
 
     const listing = result.rows[0];
@@ -41,3 +40,5 @@ class Listing {
   //TODO: function to convert photo file into url to save in database
 
 }
+
+module.exports = Listing;
