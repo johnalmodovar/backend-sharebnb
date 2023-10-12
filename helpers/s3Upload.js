@@ -1,3 +1,5 @@
+/** helper functions that deal with AWS. */
+
 const uuid = require('uuid').v4;
 const AWS = require('@aws-sdk/client-s3');
 const dotenv = require('dotenv');
@@ -8,9 +10,9 @@ const app = express();
 
 dotenv.config();
 
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const BUCKET_NAME = "sharebnb-jm";
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const BUCKET_NAME = process.env.BUCKET_NAME;
 
 const s3 = new AWS.S3({
   region: 'us-west-1',
@@ -18,6 +20,7 @@ const s3 = new AWS.S3({
   accessKeyID: AWS_ACCESS_KEY_ID
 });
 
+/** Uploads file to AWS bucket. */
 
 async function uploadToS3(file) {
   // const name = uuid() + '.jpeg';
@@ -29,7 +32,7 @@ async function uploadToS3(file) {
     Body: file.buffer
   });
 
-  return `https://${BUCKET_NAME}.s3.us-west-1.amazonaws.com/${name}`;
+  return `https://${BUCKET_NAME}.s3.us-west-1.amazonaws.com/${file.originalname}`;
 };
 
 

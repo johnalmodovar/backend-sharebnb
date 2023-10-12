@@ -30,7 +30,7 @@ router.post("/create", isLoggedIn, upload.single("photoFile"), async function (r
     photoUrl,
     listedBy
   });
-  console.log("listing in route", listing);
+
 
   return res.status(201).json({ listing });
 });
