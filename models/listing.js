@@ -12,7 +12,7 @@ class Listing {
   /** Adds listing to database with provided data.
    *
    * Return => { title, description, price, location, photoUrl, listed_by }
-   * TODO: insert user here somewhere
+   *
    */
   static async add({ title, description, price, location, photoUrl, listedBy }) {
 
@@ -36,7 +36,7 @@ class Listing {
     );
 
     const listing = result.rows[0];
-    console.log("what is listing", listing);
+    console.log("what is listing in model", listing);
     return listing;
   }
 
@@ -63,6 +63,26 @@ class Listing {
     return listing;
   }
 
+  /** Gets all listing from database
+ *
+ * Returns => [{ title, description, price, location, listed_by, photoUrl }]
+ */
+
+  static async findAll() {
+    const response = await db.query(`
+          SELECT id,
+                 title,
+                 description,
+                 price,
+                 location,
+                 photo_url AS "photoUrl",
+                 listed_by AS "listedBy"
+          FROM listings
+          ORDER BY title`
+    );
+
+    return response.rows;
+  }
 }
 
 module.exports = Listing;
