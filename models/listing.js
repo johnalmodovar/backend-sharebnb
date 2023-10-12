@@ -13,7 +13,7 @@ class Listing {
    *
    * Return => { title, description, price, availability, photoUrl }
    *    where photos => {...}
-   *
+   * TODO: insert user here somewhere
    */
   static async add({ title, description, price, location, photoUrl }) {
 
@@ -33,6 +33,24 @@ class Listing {
     );
 
     const listing = result.rows[0];
+
+    return listing;
+  }
+
+  static async get(id) {
+    const response = await db.query(`
+        SELECT id,
+               title,
+               description,
+               price,
+               availability,
+               photo_url AS "photoUrl"
+        FROM listings
+        WHERE id = $1`, [id]);
+
+    const listing = response.rows[0];
+
+    if (!listing) throw new NotFoundError("Listing Not Found.");
 
     return listing;
   }

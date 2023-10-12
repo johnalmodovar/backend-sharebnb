@@ -20,3 +20,14 @@ router.get("/", async function (req, res) {
   const listings = await Listing.findAll();
   return res.json({ listings });
 });
+
+/** GET: /:id
+ *
+ * Returns listing data { id, title, description, price, availability, photo_url }
+ */
+router.get("/:id", async function (req, res) {
+  const listing = await Listing.get(req.params.id);
+
+  return res.json({ listing });
+
+});
