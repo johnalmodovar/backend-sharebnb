@@ -11,40 +11,48 @@ class Listing {
 
   /** Adds listing to database with provided data.
    *
-   * Return => { title, description, price, availability, photoUrl }
-   *    where photos => {...}
+   * Return => { title, description, price, location, photoUrl, listed_by }
    * TODO: insert user here somewhere
    */
-  static async add({ title, description, price, location, photoUrl }) {
+  static async add({ title, description, price, location, photoUrl, listedBy }) {
 
     const result = await db.query(`
         INSERT INTO listings
           (title,
            description,
            price,
-           photo_url)
-        VALUES ($1, $2, $3, $4, $5)
+           location,
+           photo_url,
+           listed_by)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING
-           username,
+           title,
            description,
            price,
-           photo_url AS "photoUrl"`,
-      [title, description, price, photoUrl]
+           location,
+           photo_url AS "photoUrl",
+           listed_by AS "listedBy"`,
+      [title, description, price, location, photoUrl, listedBy]
     );
 
     const listing = result.rows[0];
-
+    console.log("what is listing", listing);
     return listing;
   }
 
+  /** Gets a listing from database with id.
+   *
+   * Returns => { title, description, price, location, listed_by, photoUrl }
+   */
   static async get(id) {
     const response = await db.query(`
         SELECT id,
                title,
                description,
                price,
-               availability,
-               photo_url AS "photoUrl"
+               location,
+               photo_url AS "photoUrl",
+               listed_by AS "listedBy"
         FROM listings
         WHERE id = $1`, [id]);
 
@@ -54,8 +62,6 @@ class Listing {
 
     return listing;
   }
-
-  //TODO: function to convert photo file into url to save in database
 
 }
 

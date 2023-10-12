@@ -6,16 +6,24 @@ const { readFile, uploadToS3 } = require("../helpers/s3Upload");
 
 const Listing = require('../models/listing');
 
+/** POST: /create -> adds listing to database.
+ *
+ * Returns listing data -> { title, description, price, location, photoUrl, listed_by }
+ */
 router.post("/create", isLoggedIn, async function (req, res) {
 
-  const { title, description, price, location, photoFile } = req.body;
+  const { title, description, price, location, photoFile, listedBy } = req.body;
   const photoContent = await readFile(photoFile);
   const photoUrl = await uploadToS3(photoContent);
-  const listing = Listing.add(title, description, price, location, photoUrl);
+  const listing = await Listing.add({ title, description, price, location, photoUrl, listedBy });
 
   return res.status(201).json({ listing });
 });
 
+/** GET: / -> Grabs all listings.
+ *
+ * Returns listing data -> [{ title, description, price, location, photoUrl }, ...]
+ */
 router.get("/", async function (req, res) {
   const listings = await Listing.findAll();
   return res.json({ listings });
@@ -23,7 +31,7 @@ router.get("/", async function (req, res) {
 
 /** GET: /:id
  *
- * Returns listing data { id, title, description, price, availability, photo_url }
+ * Returns listing data { title, description, price, location, photoUrl,listed_by }
  */
 router.get("/:id", async function (req, res) {
   const listing = await Listing.get(req.params.id);
@@ -31,3 +39,5 @@ router.get("/:id", async function (req, res) {
   return res.json({ listing });
 
 });
+
+module.exports = router;

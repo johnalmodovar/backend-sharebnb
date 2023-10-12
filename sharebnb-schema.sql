@@ -11,9 +11,9 @@ CREATE TABLE listings(
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    photo_url TEXT NOT NULL,
     price INTEGER NOT NULL CHECK (price >= 0),
-    location TEXT NOT NULL.
+    location TEXT NOT NULL,
+    photo_url TEXT NOT NULL,
     listed_by VARCHAR(20) NOT NULL
         REFERENCES users ON DELETE CASCADE
 );
