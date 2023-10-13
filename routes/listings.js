@@ -7,7 +7,8 @@ const { readFile, uploadToS3 } = require("../helpers/s3Upload");
 const listingNewSchema = require("../schemas/listingNew.json");
 const multer = require('multer');
 const upload = multer();
-
+const jsonschema = require("jsonschema");
+const { BadRequestError } = require("../expressError");
 const Listing = require('../models/listing');
 
 /** POST: /create -> adds listing to database.
@@ -19,9 +20,16 @@ router.post(
   isLoggedIn,
   upload.single("photoFile"),
   async function (req, res) {
-
+    let { title, description, price, location, listedBy } = req.body;
+    price = Number(price);
     const validator = jsonschema.validate(
-      req.body,
+      {
+        title,
+        description,
+        price,
+        location,
+        listedBy
+      },
       listingNewSchema,
       { required: true }
     );
@@ -31,7 +39,7 @@ router.post(
     }
 
     const photoFile = req.file;
-    const { title, description, price, location, listedBy } = req.body;
+    // const { title, description, price, location, listedBy } = req.body;
     const photoUrl = await uploadToS3(photoFile);
     const listing = await Listing.add({
       title,

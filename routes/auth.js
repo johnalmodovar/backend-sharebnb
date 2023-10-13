@@ -2,11 +2,12 @@
 
 const express = require("express");
 const router = new express.Router();
-
+const jsonschema = require("jsonschema");
 const User = require('../models/user');
 const { createToken } = require("../helpers/tokens");
 const userLoginSchema = require("../schemas/userLogin.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
+const { BadRequestError } = require("../expressError");
 
 /**
  * POST auth/register { userFormData } => { token }
@@ -17,8 +18,18 @@ const userRegisterSchema = require("../schemas/userRegister.json");
  */
 
 router.post("/register", async function (req, res) {
+  // const userFormData = { ...req.body, phone: Number(phone) };
+  let { username, firstName, lastName, password, email, phone } = req.body;
+  phone = Number(phone);
   const validator = jsonschema.validate(
-    req.body,
+    {
+      username,
+      firstName,
+      lastName,
+      password,
+      email,
+      phone
+    },
     userRegisterSchema,
     { required: true }
   );
@@ -27,8 +38,14 @@ router.post("/register", async function (req, res) {
     throw new BadRequestError(errors);
   }
 
-  const userFormData = { ...req.body };
-  const user = await User.register(userFormData);
+  const user = await User.register({
+    username,
+    firstName,
+    lastName,
+    password,
+    email,
+    phone
+  });
   const token = createToken(user);
 
   return res.status(201).json({ token });

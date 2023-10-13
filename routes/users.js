@@ -6,6 +6,7 @@ const User = require('../models/user');
 const { createToken } = require("../helpers/tokens");
 const { isCorrectUser } = require("../middleware/auth");
 
+
 /**
  * GET: /:username
  *
