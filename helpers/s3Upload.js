@@ -36,27 +36,4 @@ async function uploadToS3(file) {
 };
 
 
-// async function getPhotoUrl(path) {
-
-//   try {
-//     //TODO: may have to change w/form data
-//     const content = await fsP.readFile(path);
-//     const url = await uploadToS3(content, 'image/jpeg');
-//     //TODO: add to db instead of console log
-//     console.log(url);
-//   } catch (err) {
-//     console.error(`Error reading ${path}: ${err}`);
-//     process.exit(1);
-//   }
-// }
-
-async function readFile(path) {
-  try {
-    return await fsP.readFile(path);
-  } catch (err) {
-    console.error(`Error reading ${path}: ${err}`);
-    process.exit(1);
-  }
-}
-
 module.exports = { readFile, uploadToS3 };
