@@ -40,7 +40,9 @@ router.post("/create", isLoggedIn, upload.single("photoFile"), async function (r
  * Returns listing data -> [{ title, description, price, location, photoUrl }, ...]
  */
 router.get("/", async function (req, res) {
-  const listings = await Listing.findAll();
+  console.log("req in get all route", req.query);
+
+  const listings = await Listing.findAll(req.query);
   return res.json({ listings });
 });
 

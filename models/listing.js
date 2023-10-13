@@ -87,7 +87,9 @@ class Listing {
  */
 
   static async findAll(searchFilters = {}) {
+    console.log("searchFilters", searchFilters);
     const { location } = searchFilters;
+    console.log("location in findAll method on listing class ", location);
 
     const { whereQuery, val } = this._filterHelper(location);
 
