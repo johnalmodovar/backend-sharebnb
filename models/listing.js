@@ -36,7 +36,7 @@ class Listing {
     );
 
     const listing = result.rows[0];
-    console.log("what is listing in model", listing);
+
     return listing;
   }
 
@@ -87,9 +87,7 @@ class Listing {
  */
 
   static async findAll(searchFilters = {}) {
-    console.log("searchFilters", searchFilters);
     const { location } = searchFilters;
-    console.log("location in findAll method on listing class ", location);
 
     const { whereQuery, val } = this._filterHelper(location);
 

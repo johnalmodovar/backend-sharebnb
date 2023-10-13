@@ -1,9 +1,7 @@
 /** helper functions that deal with AWS. */
 
-const uuid = require('uuid').v4;
 const AWS = require('@aws-sdk/client-s3');
 const dotenv = require('dotenv');
-const fsP = require("fs/promises");
 const express = require('express');
 
 const app = express();
@@ -23,7 +21,6 @@ const s3 = new AWS.S3({
 /** Uploads file to AWS bucket. */
 
 async function uploadToS3(file) {
-  // const name = uuid() + '.jpeg';
 
   await s3.putObject({
     Key: file.originalname,

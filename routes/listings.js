@@ -4,6 +4,7 @@ const express = require("express");
 const router = new express.Router();
 const { isCorrectUser, isLoggedIn } = require("../middleware/auth");
 const { readFile, uploadToS3 } = require("../helpers/s3Upload");
+const listingNewSchema = require("../schemas/listingNew.json");
 const multer = require('multer');
 const upload = multer();
 
@@ -13,37 +14,45 @@ const Listing = require('../models/listing');
  *
  * Returns listing data -> { title, description, price, location, photoUrl, listed_by }
  */
-router.post("/create", isLoggedIn, upload.single("photoFile"), async function (req, res) {
-  const photoFile = req.file;
-  console.log("photoFile in route", req.file);
-  const { title, description, price, location, listedBy } = req.body;
-  // const photoContent = await readFile(photoFile);
-  console.log("all other form data in req.body in route", req.body);
+router.post(
+  "/create",
+  isLoggedIn,
+  upload.single("photoFile"),
+  async function (req, res) {
 
-  const photoUrl = await uploadToS3(photoFile);
-  console.log("photoUrl in route", photoUrl);
-  // const photoUrl = photoFile;
-  const listing = await Listing.add({
-    title,
-    description,
-    price,
-    location,
-    photoUrl,
-    listedBy
+    const validator = jsonschema.validate(
+      req.body,
+      listingNewSchema,
+      { required: true }
+    );
+    if (!validator.valid) {
+      const errors = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errors);
+    }
+
+    const photoFile = req.file;
+    const { title, description, price, location, listedBy } = req.body;
+    const photoUrl = await uploadToS3(photoFile);
+    const listing = await Listing.add({
+      title,
+      description,
+      price,
+      location,
+      photoUrl,
+      listedBy
+    });
+
+
+    return res.status(201).json({ listing });
   });
-
-
-  return res.status(201).json({ listing });
-});
 
 /** GET: / -> Grabs all listings.
  *
  * Returns listing data -> [{ title, description, price, location, photoUrl }, ...]
  */
 router.get("/", async function (req, res) {
-  console.log("req in get all route", req.query);
-
   const listings = await Listing.findAll(req.query);
+
   return res.json({ listings });
 });
 
