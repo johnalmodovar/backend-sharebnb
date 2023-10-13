@@ -63,12 +63,34 @@ class Listing {
     return listing;
   }
 
+  static _filterHelper(location) {
+    let where = [];
+    let val = [];
+
+    if (location) {
+      val.push(`%${location}%`);
+      where.push(`location ILIKE $1`);
+    }
+
+    const whereQuery = (where.length > 0) ?
+      `WHERE ${where}`
+      : "";
+
+
+    return { whereQuery, val };
+
+  }
+
   /** Gets all listing from database
  *
  * Returns => [{ title, description, price, location, listed_by, photoUrl }]
  */
 
-  static async findAll() {
+  static async findAll(searchFilters = {}) {
+    const { location } = searchFilters;
+
+    const { whereQuery, val } = this._filterHelper(location);
+
     const response = await db.query(`
           SELECT id,
                  title,
@@ -77,8 +99,8 @@ class Listing {
                  location,
                  photo_url AS "photoUrl",
                  listed_by AS "listedBy"
-          FROM listings
-          ORDER BY title`
+          FROM listings ${whereQuery}
+          ORDER BY title`, val
     );
 
     return response.rows;
